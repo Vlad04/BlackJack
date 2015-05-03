@@ -1,6 +1,11 @@
 import java.util.Random;
+import java.io.BufferedReader;
 import javax.swing.ImageIcon;
 import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+
 
 public class Naipe {
 
@@ -13,6 +18,39 @@ public class Naipe {
 
     private int figura=(int)(rnd.nextDouble()*4+0);
 	private int valor=(int)(rnd.nextDouble()*13+0);
+
+    public Naipe(){
+
+        File f = new File(BARAJA_FILE);
+        if(f.exists()== false){
+            gen_naipe_file();
+        }
+
+        read_baraja();
+
+    }
+
+    private void read_baraja(){
+
+		BufferedReader br;
+        String curline;
+        String[] line_split;
+        int pos_naipe = 0 ;
+        String path;
+
+        try {
+            br = new BufferedReader(new FileReader(BARAJA_FILE));
+            while ((curline = br.readLine()) != null) {
+               line_split = curline.split(",");
+               pos_naipe = Integer.parseInt(line_split[0]);
+               path = line_split[1];
+               naipesImg[pos_naipe]= new ImageIcon(path);
+            }
+            br.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
 	public int getValor(){
 		if ( valor == 0 ){
@@ -40,7 +78,7 @@ public class Naipe {
 		        for (int figura = 0; figura < figuras.length;figura++){
 		            pos_naipe = valor + (figura * 13);
 		            path="Blackjack/Cartas/" + figuras[figura] + "/" + (valor + 1) + ".png";
-		            writer.println(pos_naipe + "," + path);
+ 		            writer.println(pos_naipe + "," + path);
 		        }
 		    }
 
@@ -52,30 +90,15 @@ public class Naipe {
 
     }
 	public ImageIcon getImage(){
-		String path;
+
         int pos_naipe= 0 ;
-
-        path="Blackjack/Cartas/" + figuras[figura] + "/" + (valor + 1) + ".png";
-
         pos_naipe = valor + (figura * 13);
-        naipesImg[pos_naipe]= new ImageIcon(path);
-        valor = getValor();
-        
-        //System.out.println("Randome number:" +valor);
-        //System.out.println("Randmob figure:" + figura);
-
         return naipesImg[pos_naipe];
 	}
 
 	public static void main(String[] args) {
 
         Naipe prueba = new Naipe();
-
-        File f = new File(prueba.BARAJA_FILE);
-        if(f.exists()== false){
-            prueba.gen_naipe_file();
-        }
-
 		System.out.println(prueba.toString());
         System.out.println(prueba.getImage());
 

@@ -3,3 +3,4 @@ all:
 
 clean:
 	rm -rf *.class
+	rm -rf *.txt
